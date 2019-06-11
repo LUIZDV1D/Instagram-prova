@@ -7,7 +7,7 @@ import { createAppContainer, createBottomTabNavigator } from 'react-navigation';
 const Routes = createAppContainer(
     createBottomTabNavigator({
         Home: Page1,
-        About: Page2,
+        About: Page2
     })
 );
 
