@@ -10,13 +10,9 @@ const AppNatigator = createStackNavigator({
   },
    Home: {
     screen: HomeScreen
-  },
-}, 
-  navigationOptions = {
-    header: null,
-    headerMode: 'none',
-    headerVisible: false
   }
+}, 
+  
 );
 
 export default createAppContainer(AppNatigator);

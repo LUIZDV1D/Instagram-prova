@@ -25,7 +25,9 @@ export default class Home extends Component {
   }
 
     static navigationOptions = {
-        tabBarIcon: <Icon name="home" size={28} color="#000000" />
+        header: null,
+        headerVisible: false,
+        headerMode: 'none'
     }
   render() {
     return <ScrollView><View>
