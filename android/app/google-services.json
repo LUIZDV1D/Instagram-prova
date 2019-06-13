@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "88961557390",
+    "firebase_url": "https://instagramprova-e787d.firebaseio.com",
+    "project_id": "instagramprova-e787d",
+    "storage_bucket": "instagramprova-e787d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88961557390:android:4be3044778dcf389",
+        "android_client_info": {
+          "package_name": "com.instagram_prova"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88961557390-quju5v6cn9iktb55sqriigspmt83359s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM92Gpah3aSdehqlSHLeYAxA-f4sWFeoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88961557390-quju5v6cn9iktb55sqriigspmt83359s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
