@@ -1,11 +1,22 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import HomeScreen from './src/screen/Home';
 import LoginScreen from './src/screen/Login';
 
-export default class App extends Component {
-
-  render() {
-    return <LoginScreen />
+const AppNatigator = createStackNavigator({
+  Login: {
+    screen: LoginScreen
+  },
+   Home: {
+    screen: HomeScreen
+  },
+}, 
+  navigationOptions = {
+    header: null,
+    headerMode: 'none',
+    headerVisible: false
   }
-}
+);
+
+export default createAppContainer(AppNatigator);

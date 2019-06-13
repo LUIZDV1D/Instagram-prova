@@ -7,7 +7,6 @@ import firebase from 'react-native-firebase';
 
 export default class Login extends Component {
 
-
   state = {
     email: '',
     password: '',
@@ -25,10 +24,15 @@ export default class Login extends Component {
       this.setState({ isAuthenticated: true, logado: 'logado' })
       console.log(user)
 
+      if (this.state.isAuthenticated) {
+        this.props.navigation.navigate('Home')
+      }
+
     } catch (err) {
       console.log(err) 
     }
   }
+
 
   render() {
     return <View 
@@ -38,6 +42,10 @@ export default class Login extends Component {
       alignItems: 'center', 
       padding: 20,
       backgroundColor: '#333', }}>
+
+
+      <Text style={{fontSize: 30, marginBottom: 20, color: 'white', fontWeight: 'bold'}}>Entrar na sua conta</Text>
+
 
         <TextInput 
         style={{ 
@@ -53,8 +61,11 @@ export default class Login extends Component {
         />
 
         <TextInput 
+        secureTextEntry={true}
           style={{ 
-            height: 45, backgroundColor: '#FFF', alignSelf: 'stretch', borderColor: '#EEE' }}
+            height: 45, backgroundColor: '#FFF', alignSelf: 'stretch', borderColor: '#EEE', 
+            paddingHorizontal: 20 }}
+
           placeholder="Digite sua senha"
           value={this.state.password}
           onChangeText={password => this.setState({ password })}
@@ -73,6 +84,7 @@ export default class Login extends Component {
           <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Entrar</Text>
 
         </TouchableOpacity>
+
           <Text>{this.state.logado}</Text>
       </View>
       ;
