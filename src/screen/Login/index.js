@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 
-import { View, Text, Image, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import firebase from 'react-native-firebase';
 
 // import { Container } from './styles';
 
 export default class Login extends Component {
+
+  static navigationOptions = {
+    header: null,
+    headerMode: 'none',
+    headerVisible: false
+  }
 
   state = {
     email: '',
@@ -22,14 +28,22 @@ export default class Login extends Component {
       .signInWithEmailAndPassword(email, password);
 
       this.setState({ isAuthenticated: true, logado: 'logado' })
-      console.log(user)
+      await AsyncStorage.setItem('Login', 'true');
 
       if (this.state.isAuthenticated) {
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate('Menu')
       }
 
     } catch (err) {
       console.log(err) 
+    }
+  }
+
+  async componentDidMount() {
+    let log = await AsyncStorage.getItem('Login');
+
+    if (log === 'true') {
+      this.props.navigation.navigate('Menu')
     }
   }
 
