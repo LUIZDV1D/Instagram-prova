@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Container, 
+  Header, 
+  Left, Right, Body, Title, Thumbnail } from 'native-base';
 
 // import { Container } from './styles';
 
@@ -15,7 +18,7 @@ export default class Perfil extends Component {
   }
 
   async componentDidMount() {
-    await fetch('https://api.github.com/users/LUIZDV1D')
+    await fetch('https://api.instagram.com/v1/users/self/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
     .then(response => {
       return response.json()
     })
@@ -43,12 +46,34 @@ export default class Perfil extends Component {
     }
   render() {
     return <ScrollView><View>
+      <Header androidStatusBarColor="#069" style={styles.header} hasTabs>
+      <Left>
+      <TouchableOpacity>
+
+        <Icon name="instagram" size={28} color="#000000" />
+        
+      </TouchableOpacity>
+      </Left>
+      <Body>
+
+          <Title style={{color: 'black'}}>Instagram</Title>
+
+      </Body>
+
+      <Right>
+      <TouchableOpacity>
+
+        <Icon name="location-arrow" size={30} color="#000000" />
+        
+      </TouchableOpacity>
+      </Right>
+    </Header>
         <View
           style={{width: 400, height: 45, borderWidth: 1, borderColor: 'gray'}}
         >
         <Text 
             style={{marginTop: 12, marginLeft: 20, color: 'black'}}>
-            {this.state.data.login}
+            {this.state.data.data.username}
           </Text>
         </View>
 
@@ -163,3 +188,9 @@ export default class Perfil extends Component {
       </ScrollView>;
   }
 }
+
+const styles = StyleSheet.create({
+  header: { 
+    backgroundColor: "rgba(0,0,0,0.2)",
+  }
+});

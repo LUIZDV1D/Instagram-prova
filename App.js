@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { createStackNavigator, createAppContainer, getActiveChildNavigationOptions } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import MenuScreen from './src/screen/Menu';
 import LoginScreen from './src/screen/Login';
 

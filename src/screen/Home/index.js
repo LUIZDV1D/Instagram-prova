@@ -1,30 +1,49 @@
 import React, { Component } from 'react';
 
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {RefreshControl , 
+  Modal, View, Text, Image, 
+  ScrollView, StyleSheet, TouchableOpacity, AsyncStorage, FlatList, Platform, window} from 'react-native';
+
 import { Container, 
   Header, 
   Left, Right, Body, Title, Thumbnail } from 'native-base';
   import Icon from 'react-native-vector-icons/FontAwesome';
 
-// import { Container } from './styles';
 
 export default class Home extends Component {
-
+  
+  
   state = {
-    data: []
+    data: [],
+    modalVisible: false,
   }
 
   async componentDidMount() {
-    await fetch('https://api.github.com/users/LUIZDV1D')
-    .then(response => {
-      return response.json() 
-    })
-    .then(data => {
-      this.setState({
-        data
+    try {
+      await fetch(
+        'https://api.instagram.com/v1/users/self/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e',
+      )
+      .then(response => {
+        return response.json()
       })
-    })
+      .then(data => {
+        this.setState({ data: data })
+      })
+    }catch(error) {
+      console.log(error)
+    }
   }
+
+
+  setModalVisible = () => {
+    this.setState({modalVisible: true});
+  }
+
+  setModalInvisible = () => {
+    this.setState({modalVisible: false});
+  }
+
+
   static navigationOptions = {
     tabBarIcon: <Icon name="home" size={28} color="#000000" />
   }
@@ -35,7 +54,7 @@ export default class Home extends Component {
       <Left>
       <TouchableOpacity>
 
-        <Icon name="camera" size={28} color="#000000" />
+        <Icon name="instagram" size={30} color="#000000" />
         
       </TouchableOpacity>
       </Left>
@@ -53,76 +72,38 @@ export default class Home extends Component {
       </TouchableOpacity>
       </Right>
     </Header>
+  
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View>
+            <Image 
+            style={{width: 300, height: 250, borderRadius: 50, borderColor: 'red'}} 
+            source={{ uri: this.state.imageUri }}/>
+              <TouchableOpacity
+              style={{ 
+                height: 45, 
+                backgroundColor: '#069', 
+                paddingHorizontal: 20,
+                marginTop: 20,
+                justifyContent: 'center',
+                alignItems: 'center' }}
+                onPress={this.setModalInvisible}>
+                <Text style={{color: 'white'}}>Sair</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
       <View
       style={{display: 'flex', flexDirection: 'row'}}>
-        <Image 
-          style={{
-            width: 50, 
-            height: 50, 
-            borderRadius:500, 
-            borderWidth: 2,
-            borderColor: 'red',
-            marginTop: 15
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
 
-        <Text style={{marginTop: 34, marginLeft: 20, color: 'black'}}>{this.state.data.login}</Text>
-      </View>
-      <View style={{marginTop: 10}}>
-      <Image 
-          style={{
-            width: 360, 
-            height: 250
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
-      </View>
-      <View
-      style={{display: 'flex', flexDirection: 'row'}}>
-        <Image 
-          style={{
-            width: 50, 
-            height: 50, 
-            borderRadius:500, 
-            borderWidth: 2,
-            borderColor: 'red',
-            marginTop: 15
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
+        <Text>{JSON.stringify(this.state.data.data.username)}</Text>
 
-        <Text style={{marginTop: 34, marginLeft: 20, color: 'black'}}>{this.state.data.login}</Text>
       </View>
-      <View style={{marginTop: 10}}>
-      <Image 
-          style={{
-            width: 360, 
-            height: 250
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
-      </View>
-      <View
-      style={{display: 'flex', flexDirection: 'row'}}>
-        <Image 
-          style={{
-            width: 50, 
-            height: 50, 
-            borderRadius:500, 
-            borderWidth: 2,
-            borderColor: 'red',
-            marginTop: 15
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
 
-        <Text style={{marginTop: 34, marginLeft: 20, color: 'black'}}>{this.state.data.login}</Text>
-      </View>
-      <View style={{marginTop: 10}}>
-      <Image 
-          style={{
-            width: 360, 
-            height: 250
-          }} 
-          source={{uri: this.state.data.avatar_url}}/>
-      </View>
       </View>
       </ScrollView>
       ;

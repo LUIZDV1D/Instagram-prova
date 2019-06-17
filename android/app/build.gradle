@@ -138,6 +138,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-fetch-blob')
+    implementation project(':react-native-image-picker')
     compile(project(':react-native-firebase')) {
         transitive = false
     }
