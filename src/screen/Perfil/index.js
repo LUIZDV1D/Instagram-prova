@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,18 +13,19 @@ import { Container,
 export default class Perfil extends Component {
 
   state = {
-    data: [],
-    publicacoes: []
+    retorno: [],
+    counts: []
   }
 
   async componentDidMount() {
     await fetch('https://api.instagram.com/v1/users/self/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
     .then(response => {
-      return response.json()
+      return response.json();
     })
     .then(data => {
       this.setState({
-        data
+        retorno: data.data,
+        counts: data.data.counts
       })
     })
   }
@@ -58,6 +59,7 @@ export default class Perfil extends Component {
 
           <Title style={{color: 'black'}}>Instagram</Title>
 
+
       </Body>
 
       <Right>
@@ -73,7 +75,8 @@ export default class Perfil extends Component {
         >
         <Text 
             style={{marginTop: 12, marginLeft: 20, color: 'black'}}>
-            {this.state.data.data.username}
+            {this.state.retorno.username}
+            <Icon name="user" size={28} color="#000000" />
           </Text>
         </View>
 
@@ -88,7 +91,7 @@ export default class Perfil extends Component {
               marginTop: 30,
               marginLeft: 20
             }} 
-            source={{uri: this.state.data.avatar_url}}/>
+            source={{uri: this.state.retorno.profile_picture}}/>
             <View
               style={{
                 display: 'flex',
@@ -102,10 +105,10 @@ export default class Perfil extends Component {
               <Text
                 style={{
                   color: 'black',
-                  marginLeft: 20
+                  marginLeft: 18
                 }}
               >
-                {this.state.data.public_repos}
+              {this.state.counts.media}
               </Text>
               <Text>Publicaç...</Text>
               </View>
@@ -119,7 +122,7 @@ export default class Perfil extends Component {
                   marginLeft: 23
                 }}
               >
-                {this.state.data.followers}
+               
               </Text>
               <Text>Seguidores</Text>
               </View>
@@ -133,7 +136,6 @@ export default class Perfil extends Component {
                   marginLeft: 23
                 }}
               >
-                {this.state.data.following}
               </Text>
               <Text>Seguindo</Text>
               </View>
@@ -144,10 +146,10 @@ export default class Perfil extends Component {
 
       <View style={{display: 'flex', flexDirection: 'column', marginTop: 20}}>
         <Text style={{ color: 'black', marginLeft: 23 }}>
-          {this.state.data.name}
+        {this.state.retorno.full_name}
         </Text>
         <Text style={{ color: 'black', marginLeft: 23 }}>
-          {this.state.data.bio}
+          {this.state.retorno.bio}
         </Text>
       </View>
 
@@ -161,26 +163,7 @@ export default class Perfil extends Component {
       </TouchableOpacity>
       </View>
       <View>
-      {
-          this.state.publicacoes.map((u, i) => {
-            return (
-              <View key={i} 
-              style={{borderWidth: 1, borderColor: 'gray', marginTop: 15}}>
-              <Card>
-                <Image 
-            style={{
-              width: 300, 
-              height: 250
-            }} 
-            source={{uri: this.state.data.avatar_url}}/>
-                <View>
-                  <Text>{u.name}</Text>
-                </View>
-              </Card>
-              </View>
-            );
-          })
-        }
+      
       </View>
 
       </View>

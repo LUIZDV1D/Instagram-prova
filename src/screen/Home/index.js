@@ -100,8 +100,6 @@ export default class Home extends Component {
       <View
       style={{display: 'flex', flexDirection: 'row'}}>
 
-        <Text>{JSON.stringify(this.state.data.data.username)}</Text>
-
       </View>
 
       </View>
