@@ -6,7 +6,7 @@ import {RefreshControl ,
 
 import { Container, 
   Header, 
-  Left, Right, Body, Title, Thumbnail } from 'native-base';
+  Left, Right, Body, Title, Thumbnail, Content, Card, CardItem } from 'native-base';
   import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -14,35 +14,54 @@ export default class Home extends Component {
   
   
   state = {
-    data: [],
-    modalVisible: false,
+    publicacoes: [],
+    likes: [],
+    comments: [],
+    description: [],
+    retorno: [],
+    counts: []
   }
 
   async componentDidMount() {
-    try {
-      await fetch(
-        'https://api.instagram.com/v1/users/self/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e',
-      )
-      .then(response => {
-        return response.json()
+    await fetch('https://api.instagram.com/v1/users/self/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      this.setState({
+        retorno: data.data,
+        counts: data.data.counts
       })
-      .then(data => {
-        this.setState({ data: data })
-      })
-    }catch(error) {
-      console.log(error)
-    }
+    })
+
+    await fetch('https://api.instagram.com/v1/users/self/media/recent/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
+    .then(respo => {
+      return respo.json();
+    })
+    .then(publicacoes => {
+        publicacoes.data.map((value) => {
+          this.setState({
+            publicacoes: [
+              ... this.state.publicacoes,
+              value.images.low_resolution.url
+            ],
+            likes: [
+              ... this.state.likes,
+              value.likes.count
+            ],
+            comments: [
+              ... this.state.comments,
+              value.comments.count
+            ],
+            description: [
+              ... this.state.description,
+              value.caption.text
+            ]
+          })
+        })
+
+    })
   }
-
-
-  setModalVisible = () => {
-    this.setState({modalVisible: true});
-  }
-
-  setModalInvisible = () => {
-    this.setState({modalVisible: false});
-  }
-
 
   static navigationOptions = {
     tabBarIcon: <Icon name="home" size={28} color="#000000" />
@@ -72,35 +91,71 @@ export default class Home extends Component {
       </TouchableOpacity>
       </Right>
     </Header>
-  
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}>
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <View>
-            <Image 
-            style={{width: 300, height: 250, borderRadius: 50, borderColor: 'red'}} 
-            source={{ uri: this.state.imageUri }}/>
-              <TouchableOpacity
-              style={{ 
-                height: 45, 
-                backgroundColor: '#069', 
-                paddingHorizontal: 20,
-                marginTop: 20,
-                justifyContent: 'center',
-                alignItems: 'center' }}
-                onPress={this.setModalInvisible}>
-                <Text style={{color: 'white'}}>Sair</Text>
-              </TouchableOpacity>
+
+      {this.state.publicacoes.map((publi, k) => {
+            return  <View key={k}>
+            <Container>
+              <Content>
+                <Card>
+                  <CardItem header>
+                    <Left>
+                    <Image 
+                  style={{
+                    width: 50, 
+                    height: 50, 
+                    borderRadius:500, 
+                    borderWidth: 2,
+                  }} 
+                  source={{uri: this.state.retorno.profile_picture}}/>
+                    </Left>
+                      <Text style={{
+                        fontSize: 20, marginRight: 140, 
+                        marginTop: 4, color: 'black'}}>
+                      {this.state.retorno.username}
+                      </Text>
+                      <Right>
+                    <Icon name="ellipsis-v" size={20} color="#000000" />
+                    </Right>
+                  </CardItem>
+                  <CardItem>
+                  <Image key={k}
+                    style={{
+                      height: 400, 
+                      width: '100%'}} 
+
+                    source={ {uri: publi }} />
+                  </CardItem>
+                  <CardItem footer>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    <Icon name="heart" size={15} color="#000000" />
+                    <Text 
+                    style={{color: 'black', fontSize: 12, marginLeft: 5}}>
+                    {this.state.likes[k]} curtidas</Text>
+                    
+
+                    <Icon style={{marginLeft: 10}} name="comment" size={15} color="#000000" />
+                    <Text 
+                    style={{color: 'black', fontSize: 12, marginLeft: 5}}>
+                    {this.state.comments[k]} comentários</Text>
+
+                    </View>
+                  </CardItem>
+
+                  <Text 
+                      style={{color: 'black', marginLeft: 22, marginBottom: 5}}>
+
+                        <Text style={{fontWeight: 'bold'}}>
+                        {this.state.retorno.username}
+                        </Text>
+
+                         {this.state.description[k]}
+                      </Text>
+
+               </Card>
+              </Content>
+            </Container>
             </View>
-          </View>
-        </Modal>
-
-      <View
-      style={{display: 'flex', flexDirection: 'row'}}>
-
-      </View>
+          })}
 
       </View>
       </ScrollView>

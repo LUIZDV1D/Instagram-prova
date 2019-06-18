@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, AsyncStorage } from 'react-native';
 import { Card } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -14,7 +14,9 @@ export default class Perfil extends Component {
 
   state = {
     retorno: [],
-    counts: []
+    counts: [],
+    publicacoes: [],
+    resolucao: false
   }
 
   async componentDidMount() {
@@ -28,18 +30,51 @@ export default class Perfil extends Component {
         counts: data.data.counts
       })
     })
-  }
 
-  mostraPublicacoes = () => {
-     fetch('https://api.github.com/users/LUIZDV1D/repos')
-    .then(response => {
-      return response.json()
+    await fetch('https://api.instagram.com/v1/users/self/media/recent/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
+    .then(respo => {
+      return respo.json();
     })
     .then(publicacoes => {
-      this.setState({
-        publicacoes
-      })
+        publicacoes.data.map(value => {
+          this.setState({
+            publicacoes: [
+              ... this.state.publicacoes,
+              value.images.low_resolution.url
+            ]
+        })
+        })
     })
+  }
+
+  mostraPublicacoesList = async () => {
+    await fetch('https://api.instagram.com/v1/users/self/media/recent/?access_token=4583068599.3d8733d.fc26a832197c4fe592f8f8db9e50a86e')
+    .then(respo => {
+      return respo.json();
+    })
+    .then(publicacoes => {
+        publicacoes.data.map(value => {
+          this.setState({
+            publicacoes: [
+              ... this.state.publicacoes,
+              value.images.low_resolution.url
+            ]
+        })
+        })
+    })
+  }
+
+  trocaResolucao = () => {
+    this.setState({ resolucao: true })
+  }
+
+  trocaResolucaoMini = () => {
+    this.setState({ resolucao: false })
+  }
+
+  logOut = async () =>{
+    await AsyncStorage.removeItem('Login');
+    this.props.navigation.navigate('Login');
   }
 
     static navigationOptions = {
@@ -48,37 +83,27 @@ export default class Perfil extends Component {
   render() {
     return <ScrollView><View>
       <Header androidStatusBarColor="#069" style={styles.header} hasTabs>
-      <Left>
-      <TouchableOpacity>
-
-        <Icon name="instagram" size={28} color="#000000" />
-        
-      </TouchableOpacity>
-      </Left>
       <Body>
-
-          <Title style={{color: 'black'}}>Instagram</Title>
-
-
+       <Title style={{color: 'black'}}>
+          {this.state.retorno.username}
+          <Icon name="angle-down" size={18} color="#000000" />
+        </Title>
       </Body>
 
-      <Right>
-      <TouchableOpacity>
+      <Right style={{paddingHorizontal: 5}}>
+      <TouchableOpacity onPressIn={this.logOut} style={{marginRight: 8}}>
+        <Icon name="sign-out" size={30} color="#000000" />
+      </TouchableOpacity>
 
-        <Icon name="location-arrow" size={30} color="#000000" />
-        
+      <TouchableOpacity style={{marginRight: 8}}>
+        <Icon name="history" size={30} color="#000000" />
+      </TouchableOpacity>
+
+      <TouchableOpacity>
+        <Icon name="bars" size={30} color="#000000" />
       </TouchableOpacity>
       </Right>
     </Header>
-        <View
-          style={{width: 400, height: 45, borderWidth: 1, borderColor: 'gray'}}
-        >
-        <Text 
-            style={{marginTop: 12, marginLeft: 20, color: 'black'}}>
-            {this.state.retorno.username}
-            <Icon name="user" size={28} color="#000000" />
-          </Text>
-        </View>
 
         <View
           style={{display: 'flex', flexDirection: 'row'}}>
@@ -105,7 +130,7 @@ export default class Perfil extends Component {
               <Text
                 style={{
                   color: 'black',
-                  marginLeft: 18
+                  marginLeft: 22
                 }}
               >
               {this.state.counts.media}
@@ -122,7 +147,7 @@ export default class Perfil extends Component {
                   marginLeft: 23
                 }}
               >
-               
+               {this.state.counts.followed_by}
               </Text>
               <Text>Seguidores</Text>
               </View>
@@ -133,15 +158,15 @@ export default class Perfil extends Component {
               <Text
                 style={{
                   color: 'black',
-                  marginLeft: 23
+                  marginLeft: 18
                 }}
               >
+                {this.state.counts.follows}
               </Text>
               <Text>Seguindo</Text>
               </View>
               
             </View>
-            
       </View>
 
       <View style={{display: 'flex', flexDirection: 'column', marginTop: 20}}>
@@ -155,15 +180,32 @@ export default class Perfil extends Component {
 
       <View 
         style={{
-          display:'flex', justifyContent: 'center', alignItems:'center',
-          marginTop: 50, borderWidth: 1, borderColor: 'gray'
+          display:'flex', flexDirection: 'row',
+          marginTop: 50, borderWidth: 0.5, borderColor: 'gray', padding: 5
           }}>
-      <TouchableOpacity onPressIn={this.mostraPublicacoes}>
-        <Icon name="image" size={30} color="#000000" />
+      <TouchableOpacity style={{marginLeft: 40}}
+        onPressIn={this.trocaResolucaoMini}
+      >
+        <Icon name="table" size={35} color="#000000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={{marginLeft: 90}}
+        onPressIn={this.trocaResolucao}>
+        <Icon name="list" size={35} color="#000000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={{marginLeft: 80}}>
+        <Icon name="tags" size={35} color="#000000" />
       </TouchableOpacity>
       </View>
-      <View>
-      
+
+      <View style={{ alignSelf: 'stretch', width: '100%', flexDirection: 'row', flexWrap: 'wrap'}}>
+          {this.state.publicacoes.map((publi, k) => {
+            return <Image key={k}
+                    style={{
+                      height: this.state.resolucao ? 400 : 120, 
+                      width: this.state.resolucao ? '100%' : 120}} 
+
+                    source={ {uri: publi }} />
+          })}
       </View>
 
       </View>
